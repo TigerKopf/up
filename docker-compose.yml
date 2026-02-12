@@ -2,11 +2,12 @@ services:
   discord-uploader:
     image: php:8.2-apache
     container_name: discord_uploader
-    # Die Umgebungsvariablen werden von Coolify automatisch hier hineingereicht
     environment:
       - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL}
       - MAX_UPLOAD_SIZE=${MAX_UPLOAD_SIZE:-25}
-    # Dieser Befehl konfiguriert PHP beim Start für große Uploads
+    # Mountet den lokalen /src Ordner in das Apache Root-Verzeichnis
+    volumes:
+      - ./src:/var/www/html
     command: >
       sh -c "echo 'upload_max_filesize = ${MAX_UPLOAD_SIZE:-25}M' > /usr/local/etc/php/conf.d/uploads.ini &&
              echo 'post_max_size = 32M' >> /usr/local/etc/php/conf.d/uploads.ini &&
